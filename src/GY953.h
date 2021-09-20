@@ -29,7 +29,7 @@ class GY953
 public:
 	GY953(const uint8_t cs_pin,const uint8_t int_pin);
 	void	begin(void);
-	bool 	update(uint8_t mode=0);
+	void 	update(uint8_t mode=0);
 	void	getRPY(int *data);//Roll,Pitch,Yaw
 	void 	getACC(int *data);//x,y,z,0
 	void 	getGYR(int *data);//x,y,z,0

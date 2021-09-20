@@ -99,7 +99,7 @@ void GY953::readRegister(byte reg, byte *data, int len)
 	_endSPItransaction();
 }
 
-bool GY953::update(uint8_t mode)
+void GY953::update(uint8_t mode)
 {
 	uint8_t sum = 0;
 	while (!digitalRead(_INTp)){
@@ -141,9 +141,6 @@ bool GY953::update(uint8_t mode)
 			}
 		}
 		//TODO:enable other INT here
-		return 1;
-	} else {
-		return 0;
 	}
 }
 
