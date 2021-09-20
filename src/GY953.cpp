@@ -30,7 +30,7 @@ void GY953::begin(void)
 	//TODO: Check this
 	setRefreshRate(100);
 	//setMode(1);
-	while (!digitalRead(_INTp)); delay(1);
+	while (!digitalRead(_INTp));
 	//setRefreshRate(100);
 	//setMode(1);
 }
