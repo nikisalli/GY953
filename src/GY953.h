@@ -52,8 +52,6 @@ private:
 	uint8_t _INTp;
 	void 		 writeRegister(byte reg, byte *data, int len);
 	void 		 readRegister(byte reg, byte *data, int len);
-	void 		 enableInt(void);
-	static void  isr(void);
 	void 		 setMode(uint8_t mode);
 	int			 _rpy[3] = {0};
 	int			 _raw[4] = {0};

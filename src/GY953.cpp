@@ -1,6 +1,5 @@
 #include "GY953.h"
 
-static volatile bool _attention = false;
 //static byte _gy953reg_a = 0x08;
 //static byte _gy953reg_b = 0x11;
 static byte _gyBuffer[41] = {0};
@@ -10,7 +9,6 @@ GY953::GY953(const uint8_t cs_pin,const uint8_t int_pin)
 {
 	_CS = cs_pin;
 	_INTp = int_pin;
-	_attention = false;
 	_stateReg = 0;
 	_currentMode = 0;
 }
@@ -32,8 +30,7 @@ void GY953::begin(void)
 	//TODO: Check this
 	setRefreshRate(100);
 	//setMode(1);
-	enableInt();
-	while (!_attention); delay(1);
+	while (!digitalRead(_INTp)); delay(1);
 	//setRefreshRate(100);
 	//setMode(1);
 }
@@ -102,31 +99,10 @@ void GY953::readRegister(byte reg, byte *data, int len)
 	_endSPItransaction();
 }
 
-void GY953::isr(void)
-{
-	if (!_attention) _attention = true;
-}
-
-void GY953::enableInt(void)
-{
-	pinMode(_INTp,INPUT);
-	_attention = false;
-#ifdef digitalPinToInterrupt
-	uint8_t theINT = digitalPinToInterrupt(_INTp);
-	if (theINT != NOT_AN_INTERRUPT) {
-		SPI.usingInterrupt(theINT);
-		attachInterrupt(theINT, isr, RISING);
-	}
-#else
-		attachInterrupt(0,isr,RISING);
-#endif
-	
-}
-
 bool GY953::update(uint8_t mode)
 {
 	uint8_t sum = 0;
-	if (_attention){
+	while (!digitalRead(_INTp)){
 		//TODO:disable other INT here
 		readRegister(_GY953_INTREG, _gyBuffer, 41);//fill buffer
 		setMode(mode);
@@ -164,7 +140,6 @@ bool GY953::update(uint8_t mode)
 				_raw[3] = (_gyBuffer[32] << 8) | _gyBuffer[33];
 			}
 		}
-		_attention = false;
 		//TODO:enable other INT here
 		return 1;
 	} else {
