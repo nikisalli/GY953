@@ -102,43 +102,42 @@ void GY953::readRegister(byte reg, byte *data, int len)
 void GY953::update(uint8_t mode)
 {
 	uint8_t sum = 0;
-	while (!digitalRead(_INTp)){
-		//TODO:disable other INT here
-		readRegister(_GY953_INTREG, _gyBuffer, 41);//fill buffer
-		setMode(mode);
-		if (_gyBuffer[34] == 0x0D){
-			if (_stateReg & _GY953_MAGRPY){
-				for (uint8_t i = 0; i < 6; i++) sum += _gyBuffer[20 + i];
-				if (sum == _gyBuffer[39]){
-					_rpy[0] = (_gyBuffer[20] << 8) | _gyBuffer[21];//(float)_roll/100
-					_rpy[1] = (_gyBuffer[22] << 8) | _gyBuffer[23];//(float)_pitch/100
-					_rpy[2] = (_gyBuffer[24] << 8) | _gyBuffer[25];//(float)_yaw/100
-				}
-			}//end _GY953_MAGRPY
-			if (_stateReg & _GY953_MAGACC){
-				_raw[0] = (_gyBuffer[2] << 8) | _gyBuffer[3];//X
-				_raw[1] = (_gyBuffer[4] << 8) | _gyBuffer[5];//Y
-				_raw[2] = (_gyBuffer[6] << 8) | _gyBuffer[7];//Z
-				_raw[3] = 0;//na
+	while (!digitalRead(_INTp));
+	//TODO:disable other INT here
+	readRegister(_GY953_INTREG, _gyBuffer, 41);//fill buffer
+	setMode(mode);
+	if (_gyBuffer[34] == 0x0D){
+		if (_stateReg & _GY953_MAGRPY){
+			for (uint8_t i = 0; i < 6; i++) sum += _gyBuffer[20 + i];
+			if (sum == _gyBuffer[39]){
+				_rpy[0] = (_gyBuffer[20] << 8) | _gyBuffer[21];//(float)_roll/100
+				_rpy[1] = (_gyBuffer[22] << 8) | _gyBuffer[23];//(float)_pitch/100
+				_rpy[2] = (_gyBuffer[24] << 8) | _gyBuffer[25];//(float)_yaw/100
 			}
-			if (_stateReg & _GY953_MAGGYR){
-				_raw[0] = (_gyBuffer[8] << 8) | _gyBuffer[9];//X
-				_raw[1] = (_gyBuffer[10] << 8) | _gyBuffer[11];//Y
-				_raw[2] = (_gyBuffer[12] << 8) | _gyBuffer[13];//Z
-				_raw[3] = 0;//na
-			}
-			if (_stateReg & _GY953_MAGMAG){
-				_raw[0] = (_gyBuffer[14] << 8) | _gyBuffer[15];//X
-				_raw[1] = (_gyBuffer[16] << 8) | _gyBuffer[17];//Y
-				_raw[2] = (_gyBuffer[18] << 8) | _gyBuffer[19];//Z
-				_raw[3] = 0;//na
-			}
-			if (_stateReg & _GY953_MAG_Q4){
-				_raw[0] = (_gyBuffer[26] << 8) | _gyBuffer[27];
-				_raw[1] = (_gyBuffer[28] << 8) | _gyBuffer[29];
-				_raw[2] = (_gyBuffer[30] << 8) | _gyBuffer[31];
-				_raw[3] = (_gyBuffer[32] << 8) | _gyBuffer[33];
-			}
+		}//end _GY953_MAGRPY
+		if (_stateReg & _GY953_MAGACC){
+			_raw[0] = (_gyBuffer[2] << 8) | _gyBuffer[3];//X
+			_raw[1] = (_gyBuffer[4] << 8) | _gyBuffer[5];//Y
+			_raw[2] = (_gyBuffer[6] << 8) | _gyBuffer[7];//Z
+			_raw[3] = 0;//na
+		}
+		if (_stateReg & _GY953_MAGGYR){
+			_raw[0] = (_gyBuffer[8] << 8) | _gyBuffer[9];//X
+			_raw[1] = (_gyBuffer[10] << 8) | _gyBuffer[11];//Y
+			_raw[2] = (_gyBuffer[12] << 8) | _gyBuffer[13];//Z
+			_raw[3] = 0;//na
+		}
+		if (_stateReg & _GY953_MAGMAG){
+			_raw[0] = (_gyBuffer[14] << 8) | _gyBuffer[15];//X
+			_raw[1] = (_gyBuffer[16] << 8) | _gyBuffer[17];//Y
+			_raw[2] = (_gyBuffer[18] << 8) | _gyBuffer[19];//Z
+			_raw[3] = 0;//na
+		}
+		if (_stateReg & _GY953_MAG_Q4){
+			_raw[0] = (_gyBuffer[26] << 8) | _gyBuffer[27];
+			_raw[1] = (_gyBuffer[28] << 8) | _gyBuffer[29];
+			_raw[2] = (_gyBuffer[30] << 8) | _gyBuffer[31];
+			_raw[3] = (_gyBuffer[32] << 8) | _gyBuffer[33];
 		}
 		//TODO:enable other INT here
 	}
